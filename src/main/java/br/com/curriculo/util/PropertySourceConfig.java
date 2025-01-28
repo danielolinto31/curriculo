@@ -1,0 +1,46 @@
+package br.com.curriculo.util;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+
+@Configuration
+@PropertySource("classpath:config.properties")
+public class PropertySourceConfig {
+
+	@Value("${app.sizeLimitToFileUpload}")
+	private String sizeLimitToFileUpload;
+
+	@Value("${app.logo}")
+	private String appLogo;
+
+	@Value("${app.name}")
+	private String appName;
+
+	@Value("${app.version.number}")
+	private String appVersionNumber;
+
+	@Value("${app.version.date}")
+	private String appVersionDate;
+
+	public Long getSizeLimitToFileUpload() {
+		return Long.parseLong(sizeLimitToFileUpload);
+	}
+
+	public String getAppLogo() {
+		return appLogo;
+	}
+
+	public String getAppName() {
+		return appName;
+	}
+
+	public String getAppVersionNumber() {
+		return appVersionNumber;
+	}
+
+	public String getAppVersionDate() {
+		return appVersionDate;
+	}
+
+}

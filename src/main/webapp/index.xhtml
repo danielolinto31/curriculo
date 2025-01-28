@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" lang="pt-BR">
+
+<h:head>
+	<f:facet name="first">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+	</f:facet>
+	<title>Currículo</title>
+	<link rel="shortcut icon" href="#{resource['images:favicon.ico']}"
+		type="img/x-icon" />
+	<h:outputScript library="js" name="script.js" target="head" />
+	<h:outputScript library="js" name="locales.js" target="head" />
+</h:head>
+
+<h:body>
+	<p:tooltip globalSelector="i,a,button,input,span" position="bottom" />
+
+	<div class="flex align-items-center justify-content-center">
+		<div class="surface-card p-4 shadow-2 border-round w-full w-12 lg:w-9">
+			<div class="text-center mb-5">
+				<p:graphicImage library="images"
+					name="#{propertySourceConfig.appLogo}" alt="Imagem do currículo"
+					height="120" styleClass="mb-3" />
+				<div class="text-900 text-3xl font-medium mb-3">Formulário de
+					Envio de Currículo</div>
+				<span class="text-600 font-medium line-height-3">Preencha os
+					campos abaixo:</span>
+			</div>
+
+			<h:form id="formSave" prependId="false" enctype="multipart/form-data">
+				<p:growl id="messages" />
+
+				<div class="formgrid grid">
+					<div class="field col-12 md:col-6">
+						<p:outputLabel for="@next" value="Nome completo:"
+							styleClass="block" />
+						<p:inputText id="nome" value="#{formularioBean.entity.nome}"
+							readonly="#{formularioBean.actionView}" styleClass="block w-full" />
+					</div>
+					<div class="field col-12 md:col-4">
+						<p:outputLabel for="@next" value="E-mail:" styleClass="block" />
+						<p:inputText id="email" value="#{formularioBean.entity.email}"
+							readonly="#{formularioBean.actionView}" styleClass="block w-full" />
+					</div>
+					<div class="field col-12 md:col-2">
+						<p:outputLabel for="@next" value="Telefone:" styleClass="block" />
+						<p:inputMask id="telefone" mask="(99) 99999-9999"
+							value="#{formularioBean.entity.telefone}"
+							readonly="#{formularioBean.actionView}"
+							placeholder="(__) _____-____" styleClass="block w-full" />
+					</div>
+					<div class="field col-12 md:col-3">
+						<p:outputLabel for="@next" value="Escolaridade:"
+							styleClass="block" />
+						<p:selectOneMenu id="escolaridade"
+							value="#{formularioBean.entity.escolaridade}"
+							readonly="#{formularioBean.actionView}" styleClass="w-full">
+							<f:selectItem itemLabel="-- Selecione --" />
+							<f:selectItems value="#{formularioBean.escolaridadeList}"
+								var="escolaridade" itemValue="#{escolaridade}"
+								itemLabel="#{escolaridade.descricao}" />
+						</p:selectOneMenu>
+					</div>
+					<div class="field col-12 md:col-9">
+						<p:outputLabel for="@next" value="Cargo Desejado:"
+							styleClass="block" />
+						<p:inputText id="cargo"
+							value="#{formularioBean.entity.cargoDesejado}"
+							readonly="#{formularioBean.actionView}" styleClass="block w-full" />
+					</div>
+					<div class="field col-12">
+						<p:outputLabel for="@next" value="Observações:" styleClass="block" />
+						<p:inputTextarea rows="3" cols="30" counter="display"
+							value="#{formularioBean.entity.observacoes}" maxlength="500"
+							counterTemplate="{0} caracteres restantes." autoResize="false"
+							readonly="#{formularioBean.actionView}" styleClass="w-full" />
+						<small><h:outputText id="display" /> </small>
+					</div>
+					<div class="field col-12">
+						<p:outputLabel for="@next" value="Arquivo: *" styleClass="block" />
+						<p:fileUpload auto="true" id="carregarArquivos"
+							label="Anexar arquivo" mode="advanced" process="@this"
+							sizeLimit="#{propertySourceConfig.sizeLimitToFileUpload}"
+							listener="#{formularioBean.handleFileUpload}"
+							update="messages pnlUpload" multiple="false"
+							rendered="#{not formularioBean.actionView}"
+							description="Selecione um arquivo para ser anexado."
+							messageTemplate="(Nome: {name}. Tamanho: {size})"
+							allowTypes="/(\.|\/)(pdf|PDF|doc|DOC|docs|DOCX)$/"
+							invalidFileMessage="Tipo do arquivo inválido. Só é permitido anexar arquivo no formato PDF."
+							invalidSizeMessage="Tamanho do arquivo excedido. 
+								Tamanho máximo permitido é de 1 MB. Comprima o arquivo para conseguir anexá-lo." />
+						<h:panelGroup id="pnlUpload">
+							<p:outputLabel value="Nome do arquivo:" styleClass="mr-2"
+								for="nomeArquivoDownload" />
+							<h:outputText value="-"
+								rendered="#{formularioBean.entity.arquivo.nome == null}" />
+							<p:commandLink id="nomeArquivoDownload"
+								value="#{formularioBean.entity.arquivo.nome}"
+								rendered="#{formularioBean.entity.arquivo.nome != null}"
+								actionListener="#{formularioBean.download(formularioBean.entity)}"
+								ajax="false" submit="false" immediate="true" target="_blank" />
+						</h:panelGroup>
+					</div>
+					<div class="col-12">
+						<p:captcha label="Captcha" language="pt"
+							rendered="#{not formularioBean.actionView}" />
+						<p:separator />
+						<div class="flex flex-wrap gap-2">
+							<p:commandButton id="btnSaveAndClean" value="Enviar currículo"
+								icon="fa fa-save"
+								actionListener="#{formularioBean.saveAndClean}"
+								disabled="#{formularioBean.actionView}" title="Enviar currículo"
+								update="formSave formList messages" />
+							<p:commandButton id="btnLimparCampos"
+								styleClass="bg-red-300 border-red-300"
+								actionListener="#{formularioBean.limparCampos}" value="Limpar"
+								title="Resetar o preenchimento" icon="fa fa-eraser"
+								update="formSave messages" process="@this" />
+						</div>
+					</div>
+				</div>
+			</h:form>
+		</div>
+	</div>
+
+	<div class="flex align-items-center justify-content-center mt-3">
+		<div class="surface-card p-4 shadow-2 border-round w-full w-12 lg:w-9">
+			<h:form id="formList" prependId="false">
+				<div class="grid">
+					<div class="col-12">
+						<p:dataTable id="dtTable" var="obj"
+							value="#{formularioBean.dataLazyModel}" paginator="true"
+							rows="10" lazy="true" paginatorPosition="bottom"
+							scrollable="true" scrollWidth="100%" styleClass="w-full"
+							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {CurrentPageReport}"
+							currentPageReportTemplate="Página {currentPage} de {totalPages} - Total de {totalRecords} registro(s)"
+							emptyMessage="Nenhum registro foi encontrado.">
+
+							<p:ajax event="page" />
+							<p:ajax event="sort" />
+
+							<p:column headerText="Nome" sortBy="#{obj.nome}"
+								styleClass="w-12rem lg:w-2 text-center">
+								<h:outputText value="#{obj.nome}" />
+							</p:column>
+							<p:column headerText="E-mail" sortBy="#{obj.email}"
+								styleClass="w-8rem lg:w-2 text-center">
+								<h:outputText value="#{obj.email}" />
+							</p:column>
+							<p:column headerText="Telefone" sortBy="#{obj.telefone}"
+								styleClass="w-6rem lg:w-1 text-center">
+								<h:outputText value="#{obj.telefone}" />
+							</p:column>
+							<p:column headerText="Escolaridade" sortBy="#{obj.escolaridade}"
+								styleClass="w-6rem lg:w-2 text-center">
+								<h:outputText value="#{obj.escolaridade.descricao}" />
+							</p:column>
+							<p:column headerText="Cargo desejado"
+								sortBy="#{obj.cargoDesejado}"
+								styleClass="w-8rem lg:w-2 text-center">
+								<h:outputText value="#{obj.cargoDesejado}" />
+							</p:column>
+							<p:column headerText="IP" sortBy="#{obj.ip}"
+								styleClass="w-6rem lg:w-1 text-center">
+								<h:outputText value="#{obj.ip}" />
+							</p:column>
+							<p:column sortBy="#{obj.dataEnvio}" styleClass="w-6rem lg:w-1 text-center">
+								<f:facet name="header">
+									Data do<br />envio
+								</f:facet>
+								<h:outputText value="#{obj.dataEnvio}">
+									<f:convertDateTime pattern="dd/MM/yyyy 'às' HH:mm"
+										timeZone="GMT-3" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Ações" styleClass="w-10rem lg:w-1">
+								<div class="flex flex-column">
+									<p:commandLink id="btnView" title="Visualizar"
+										actionListener="#{formularioBean.loadViewMode(obj)}"
+										update="formSave formList messages" icon="fa fa-pencil">
+										<i class="fa fa-search mr-2" />Visualizar
+											</p:commandLink>
+									<p:commandLink id="btnEdit" title="Alterar"
+										actionListener="#{formularioBean.loadEditMode(obj)}"
+										update="formSave formList messages" icon="fa fa-pencil">
+										<i class="fa fa-pencil mr-2" />Alterar
+											</p:commandLink>
+									<p:commandLink id="btnDelete" title="Excluir"
+										actionListener="#{formularioBean.delete(obj)}"
+										icon="fa fa-close" update="formList messages">
+										<p:confirm header="Exclusão de registro"
+											message="Deseja realmente excluir este registro?"
+											icon="fa fa-exclamation-triangle" />
+										<f:setPropertyActionListener value="#{obj}"
+											target="#{formularioBean.entity}" />
+										<i class="fa fa-exclamation-triangle mr-2" />Excluir
+											</p:commandLink>
+								</div>
+							</p:column>
+						</p:dataTable>
+						<p:separator />
+						<h:outputText styleClass="text-xs"
+							value="Versão #{propertySourceConfig.appVersionNumber} (#{propertySourceConfig.appVersionDate})" />
+					</div>
+				</div>
+			</h:form>
+		</div>
+	</div>
+
+	<p:confirmDialog global="true" closeOnEscape="true" modal="true"
+		width="400" showEffect="fade" hideEffect="fade" responsive="true"
+		closable="false">
+		<p:commandButton value="Sim" type="button"
+			styleClass="ui-confirmdialog-yes bg-red-300 border-red-300" icon="fa fa-check" title="Sim" />
+		<p:commandButton value="Não" type="button"
+			styleClass="ui-confirmdialog-no" icon="fa fa-close" title="Não" />
+	</p:confirmDialog>
+
+	<p:dialog widgetVar="statusDialog" draggable="false" resizable="false"
+		closable="false" width="175"
+		styleClass="statusCarregando border-round-md" fitViewport="true"
+		showEffect="fade" hideEffect="clip" blockScroll="true"
+		responsive="true" position="center center" modal="true">
+		<i class="fa fa-circle-o-notch fa-spin fa-4x fa-fw"></i>
+		<h:outputText value="Carregando..."
+			styleClass="block text-sm font-medium my-2" />
+		<span class="sr-only">Carregando...</span>
+	</p:dialog>
+
+	<link rel="stylesheet"
+		href="https://unpkg.com/primeflex@latest/primeflex.css" />
+	<h:outputStylesheet name="locale.css" library="css" />
+	<h:outputStylesheet name="style.css" library="css" />
+</h:body>
+</html>
