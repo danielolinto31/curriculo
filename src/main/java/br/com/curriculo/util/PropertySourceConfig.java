@@ -23,6 +23,12 @@ public class PropertySourceConfig {
 	@Value("${app.version.date}")
 	private String appVersionDate;
 
+	@Value("${app.url}")
+	private String url;
+
+	@Value("${app.owner}")
+	private String appOwner;
+
 	public Long getSizeLimitToFileUpload() {
 		return Long.parseLong(sizeLimitToFileUpload);
 	}
@@ -41,6 +47,14 @@ public class PropertySourceConfig {
 
 	public String getAppVersionDate() {
 		return appVersionDate;
+	}
+
+	public String getAppUrl() {
+		return url;
+	}
+
+	public String getAppOwner() {
+		return appOwner;
 	}
 
 }

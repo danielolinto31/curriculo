@@ -12,12 +12,17 @@
 		<meta name="viewport"
 			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
 		<meta name="apple-mobile-web-app-capable" content="yes" />
+
+		<link rel="stylesheet"
+			href="https://unpkg.com/primeflex@latest/primeflex.css" />
+		<h:outputStylesheet name="style.css" library="css" />
+
+		<h:outputScript library="js" name="script.js" target="head" />
+		<h:outputScript library="js" name="locales.js" target="head" />
 	</f:facet>
 	<title>Currículo</title>
 	<link rel="shortcut icon" href="#{resource['images:favicon.ico']}"
 		type="img/x-icon" />
-	<h:outputScript library="js" name="script.js" target="head" />
-	<h:outputScript library="js" name="locales.js" target="head" />
 </h:head>
 
 <h:body>
@@ -26,11 +31,12 @@
 	<div class="flex align-items-center justify-content-center">
 		<div class="surface-card p-4 shadow-2 border-round w-full w-12 lg:w-9">
 			<div class="text-center mb-5">
-				<p:graphicImage library="images"
-					name="#{propertySourceConfig.appLogo}" alt="Imagem do currículo"
-					height="120" styleClass="mb-3" />
-				<div class="text-900 text-3xl font-medium mb-3">Formulário de
-					Envio de Currículo</div>
+				<p:link href="#{propertySourceConfig.appUrl}" title="Página inicial">
+					<p:graphicImage library="images" height="120"
+						name="#{propertySourceConfig.appLogo}" alt="Imagem do currículo" />
+					<div class="block text-900 text-3xl font-medium">Formulário
+						de Envio de Currículo</div>
+				</p:link>
 				<span class="text-600 font-medium line-height-3">Preencha os
 					campos abaixo:</span>
 			</div>
@@ -173,7 +179,8 @@
 								styleClass="w-6rem lg:w-1 text-center">
 								<h:outputText value="#{obj.ip}" />
 							</p:column>
-							<p:column sortBy="#{obj.dataEnvio}" styleClass="w-6rem lg:w-1 text-center">
+							<p:column sortBy="#{obj.dataEnvio}"
+								styleClass="w-6rem lg:w-1 text-center">
 								<f:facet name="header">
 									Data do<br />envio
 								</f:facet>
@@ -207,12 +214,20 @@
 								</div>
 							</p:column>
 						</p:dataTable>
-						<p:separator />
-						<h:outputText styleClass="text-xs"
-							value="Versão #{propertySourceConfig.appVersionNumber} (#{propertySourceConfig.appVersionDate})" />
 					</div>
 				</div>
 			</h:form>
+		</div>
+	</div>
+
+	<div class="flex align-items-center justify-content-center mt-3">
+		<div class="surface-card p-4 shadow-2 border-round w-full w-12 lg:w-9">
+			<div class="flex justify-content-between flex-wrap">
+				<h:outputText styleClass="text-xs"
+					value="Versão #{propertySourceConfig.appVersionNumber} (#{propertySourceConfig.appVersionDate})" />
+				<h:outputText styleClass="text-xs"
+					value="Desenvolvido por: #{propertySourceConfig.appOwner}" />
+			</div>
 		</div>
 	</div>
 
@@ -220,7 +235,8 @@
 		width="400" showEffect="fade" hideEffect="fade" responsive="true"
 		closable="false">
 		<p:commandButton value="Sim" type="button"
-			styleClass="ui-confirmdialog-yes bg-red-300 border-red-300" icon="fa fa-check" title="Sim" />
+			styleClass="ui-confirmdialog-yes bg-red-300 border-red-300"
+			icon="fa fa-check" title="Sim" />
 		<p:commandButton value="Não" type="button"
 			styleClass="ui-confirmdialog-no" icon="fa fa-close" title="Não" />
 	</p:confirmDialog>
@@ -235,10 +251,5 @@
 			styleClass="block text-sm font-medium my-2" />
 		<span class="sr-only">Carregando...</span>
 	</p:dialog>
-
-	<link rel="stylesheet"
-		href="https://unpkg.com/primeflex@latest/primeflex.css" />
-	<h:outputStylesheet name="locale.css" library="css" />
-	<h:outputStylesheet name="style.css" library="css" />
 </h:body>
 </html>

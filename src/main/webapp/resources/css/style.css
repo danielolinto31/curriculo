@@ -185,4 +185,14 @@
 
 body {
 	font-family: "Open Sans", "Helvetica Neue", sans-serif;
+	word-break: break-word;
+	hyphens: auto;
+}
+
+.ui-datatable,
+body .ui-datatable .ui-paginator,
+.ui-datatable-scrollable-header,
+.ui-datatable-scrollable-body,
+.ui-datatable-scrollable-footer {
+	width: 100% !important;
 }
